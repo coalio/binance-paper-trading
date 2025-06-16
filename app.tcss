@@ -1,0 +1,77 @@
+Screen {
+    layout: horizontal;
+}
+
+#left_pane {
+    width: 3fr;
+    height: 100%;
+    layout: vertical;
+}
+
+#right_pane {
+    width: 40;
+    min-width: 40;
+    height: 100%;
+}
+
+#open_positions, #history {
+    height: 1fr;
+    border: round #666;
+}
+
+PriceDisplay {
+    padding: 1 2;
+    width: 100%;
+    margin: 0 0 0 0;
+}
+
+#price {
+    margin: 0 0 1 0;
+}
+
+OrderForm {
+    padding: 1 1;
+}
+
+#submit_row {
+    align-horizontal: left;
+    padding-top: 0;
+}
+
+#submit_row Button {
+    width: 1fr;
+    margin: 0 0 0 1;
+}
+
+Label {
+    padding-left: 1;
+}
+
+Input {
+    width: 100%;
+}
+
+#qty_row {
+    layout: horizontal;
+}
+
+#qty_row Input {
+    width: 1fr;
+}
+
+#qty_row Button {
+    width: 6;
+    min-width: 6;
+    margin-left: 1;
+}
+
+/* Symbol select width */
+#symbol {
+    width: 1fr;
+    margin: 0 0 1 1;
+}
+
+/* Make compact select borderless and full width */
+#symbol.-textual-compact SelectCurrent {
+    width: 1fr;
+}
