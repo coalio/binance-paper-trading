@@ -22,6 +22,7 @@ class HistoryTable(DataTable):
         """
         existing_keys = {row.key for row in self.rows.values()}
 
+        # TODO: refactor this
         def fmt(x):
             return f"{x:,.2f}" if isinstance(x, (int, float)) else x
 
