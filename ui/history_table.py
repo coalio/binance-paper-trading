@@ -6,6 +6,7 @@ class HistoryTable(DataTable):
     def __init__(self) -> None:
         super().__init__(zebra_stripes=True)
         self.add_columns(
+            "ID",
             "Symbol",
             "Side",
             "Size",
@@ -30,6 +31,7 @@ class HistoryTable(DataTable):
             row_key = f"hist-{idx}"  # stable key per history order
             pnl_colour = "green" if h["net_pnl"] >= 0 else "red"
             row_values = [
+                h.get("id", ""),
                 h["symbol"],
                 h["side"],
                 fmt(h["size"]),
@@ -48,3 +50,4 @@ class HistoryTable(DataTable):
         for key in list(existing_keys):
             if key not in {f"hist-{idx}" for idx in range(len(history))}:
                 self.remove_row(key) 
+ 

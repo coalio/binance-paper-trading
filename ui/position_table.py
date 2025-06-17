@@ -6,6 +6,7 @@ class PositionTable(DataTable):
     def __init__(self) -> None:
         super().__init__(zebra_stripes=True)
         self.add_columns(
+            "ID",
             "Symbol",
             "Side",
             "Size",
@@ -14,6 +15,7 @@ class PositionTable(DataTable):
             "Break-even",
             "PnL",
             "Net PnL",
+            "Limit",
             "Close",
         )
 
@@ -35,6 +37,7 @@ class PositionTable(DataTable):
                 return f"{x:,.2f}" if isinstance(x, (int, float)) else x
 
             row_values = [
+                p["id"],
                 p["symbol"],
                 p["side"],
                 fmt(p["size"]),
@@ -43,11 +46,11 @@ class PositionTable(DataTable):
                 fmt(p["breakeven"]),
                 f"[{pnl_colour}]{fmt(p['pnl'])}[/{pnl_colour}]",
                 f"[{net_colour}]{fmt(p['net_pnl'])}[/{net_colour}]",
+                "Limit",
                 "Close",
             ]
 
             if row_key in existing_keys:
-                # update cells
                 for col_key, value in zip(self.columns.keys(), row_values):
                     self.update_cell(row_key, col_key, value)
             else:

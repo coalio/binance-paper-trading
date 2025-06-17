@@ -14,7 +14,7 @@ Screen {
     height: 100%;
 }
 
-#open_positions, #history {
+#positions_tabs, #history {
     height: 1fr;
     border: round #666;
 }
@@ -74,4 +74,46 @@ Input {
 /* Make compact select borderless and full width */
 #symbol.-textual-compact SelectCurrent {
     width: 1fr;
+}
+
+#positions_tabs {
+    height: 1fr;
+}
+
+#positions_tabs TabPane {
+    height: 1fr;
+}
+
+DataTable {
+    height: 1fr;
+    width: 100%;
+}
+
+DataTable > .datatable--cursor {
+    background: transparent;
+}
+
+/* Limit dialog */
+#dialog_container {
+    width: 50;
+    max-width: 60;
+    height: 11;
+    border: round white;
+    padding: 1 2;
+    align: center middle;
+    background: $panel;
+}
+
+#dialog_buttons {
+    align-horizontal: right;
+    padding-top: 1;
+}
+
+#dialog_buttons Button {
+    margin-right: 1;
+    height: 3;
+}
+
+LimitDialog {
+    align: center middle;
 }
