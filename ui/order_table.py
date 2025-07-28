@@ -22,4 +22,4 @@ class OrderTable(DataTable):
         # Remove stale rows
         for k in list(existing):
             if k not in {o["id"] for o in orders}:
-                self.remove_row(k) 
+                self.remove_row(k)

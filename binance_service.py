@@ -7,6 +7,8 @@ class BinanceService:
     """
     def __init__(self):
         self.client = UMFutures()
+        # Cache for commission lookups to avoid repeated network calls
+        self._commission_cache: dict[str, tuple[float, float]] = {}
 
     async def get_symbol_prices(self, symbol: str) -> tuple[str, str]:
         """
@@ -39,4 +41,55 @@ class BinanceService:
         else:
             # Fallback: call via generic endpoint path
             return {}
+
+    async def get_symbol_commission_rates(self, symbol: str) -> tuple[float, float]:
+        """Return (makerCommission, takerCommission) **as decimal rates** for the given symbol.
+
+        Binance REST responses sometimes express commissions as integer basis points
+        (e.g. 2 -> 0.02%).  This helper normalises the values to fractions: 0.0002 -> 0.02%.
+
+        If the exchange-info payload does not include commission fields, or the API call
+        fails, we fall back to the common default 0.02% maker / 0.04% taker that is
+        applied to regular USDT-M perpetual accounts.
+        """
+
+        # Serve from cache first
+        cached = self._commission_cache.get(symbol)
+        if cached:
+            return cached
+
+        maker: float | None = None
+        taker: float | None = None
+
+        try:
+            exchange_info = await asyncio.to_thread(self._get_exchange_info)
+            for s in exchange_info.get("symbols", []):
+                if s.get("symbol") == symbol:
+                    # Spot API returns integers like 15 ( =0.15% ). Futures has similar.
+                    maker_raw = s.get("makerCommission")
+                    taker_raw = s.get("takerCommission")
+
+                    if maker_raw is not None:
+                        maker = float(maker_raw)
+                    if taker_raw is not None:
+                        taker = float(taker_raw)
+                    break
+        except Exception:
+            # Ignore network / parsing errors – will fall back to defaults
+            pass
+
+        # Fallback defaults if missing or zero
+        if not maker:
+            maker = 0.0002  # 0.02%
+        if not taker:
+            taker = 0.0004  # 0.04%
+
+        # Convert integer basis-point style ( >1 ) to decimal fraction if needed
+        if maker > 1:
+            maker = maker / 10000  # e.g. 2  -> 0.0002
+        if taker > 1:
+            taker = taker / 10000
+
+        self._commission_cache[symbol] = (maker, taker)
+        return maker, taker
 

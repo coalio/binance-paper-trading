@@ -108,7 +108,13 @@ class OrderForm(Vertical):
             self.symbol_select.value = Select.BLANK
 
     def set_coin_label_from_symbol(self, symbol: str) -> None:
-        """Update coin button label based on symbol like BTCUSDT -> BTC."""
+        """Update coin button label based on symbol like BTCUSDT -> BTC.
+
+        Safely handle cases where *symbol* may be `None` or a Textual *NoSelection* sentinel.
+        """
+        if not isinstance(symbol, str) or symbol == "":
+            return
+
         base = symbol.replace("USDT", "")
         self.coin_button.label = base
         if self.qty_mode == "COIN":
